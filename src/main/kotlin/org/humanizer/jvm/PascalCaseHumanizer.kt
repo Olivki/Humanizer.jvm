@@ -1,16 +1,13 @@
+@file:JvmName("PascalCaseHumanizer")
+
 package org.humanizer.jvm
 
-import org.humanizer.jvm.letterCasings.*
+import org.humanizer.jvm.casing.*
 
-fun String.humanize(letterCasing : LetterCasing = LetterCasing.Sentence): String {
-     when (letterCasing) {
-         LetterCasing.LowerCase -> return this.letterCasingLowerCase()
-         LetterCasing.AllCaps -> return this.letterCasingUpperCase()
-         LetterCasing.Title -> return this.letterCasingTitle()
-         LetterCasing.Sentence -> return this.letterCasingSentence()
-     }
-    return this
- }
-
-
-
+@JvmOverloads
+fun String.humanize(letterCasing: LetterCasing = LetterCasing.Sentence): String = when (letterCasing) {
+    LetterCasing.LowerCase -> this.letterCasingLowerCase()
+    LetterCasing.UpperCase -> this.letterCasingUpperCase()
+    LetterCasing.Title -> this.letterCasingTitle()
+    LetterCasing.Sentence -> this.letterCasingSentence()
+}

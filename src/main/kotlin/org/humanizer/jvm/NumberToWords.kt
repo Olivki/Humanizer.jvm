@@ -1,23 +1,18 @@
+@file:JvmName("NumberHumanizer")
+
 package org.humanizer.jvm
 
-import org.humanizer.jvm.localisation
-import java.util.Locale
+import java.util.*
 
-fun Int.toWords(): String {
-    return this.toLong().toWords()
+fun Int.toWords(): String = this.toLong().toWords()
+
+fun Long.toWords(): String = when (Locale.getDefault().language) {
+    "nl" -> org.humanizer.jvm.localisation.nl.NumberToWords().toWords(this)
+    else -> org.humanizer.jvm.localisation.en.NumberToWords().toWords(this)
 }
 
-fun Long.toWords(): String {
-    when(Locale.getDefault().getLanguage()) {
-        "nl" -> return localisation.nl.NumberToWords().toWords(this)
-        else -> return localisation.en.NumberToWords().toWords(this)
-    }
-}
-
-fun Int.toOrdinalWords(): String {
-    when(Locale.getDefault().getLanguage()) {
-        "nl" -> return localisation.nl.NumberToWords().toOrdinalWords(this)
-        else -> return localisation.en.NumberToWords().toOrdinalWords(this)
-    }
+fun Int.toOrdinalWords(): String = when (Locale.getDefault().language) {
+    "nl" -> org.humanizer.jvm.localisation.nl.NumberToWords().toOrdinalWords(this)
+    else -> org.humanizer.jvm.localisation.en.NumberToWords().toOrdinalWords(this)
 }
 

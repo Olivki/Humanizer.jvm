@@ -1,46 +1,45 @@
+@file:JvmName("QuanityHumanizer")
+
 package org.humanizer.jvm
 
-import java.util.Locale
-import java.text.NumberFormat
+@JvmOverloads
+fun String.toQuantity(quantity: Int, showQuantityAs: ShowQuantityAs = ShowQuantityAs.Numeric): String =
+    this.toQuantity(quantity.toLong(), showQuantityAs)
 
-fun String.toQuantity(quantity: Int, showQuantityAs: ShowQuantityAs = ShowQuantityAs.Numeric) : String {
-    return this.toQuantity(quantity.toLong(), showQuantityAs)
-}
-
-fun String.toQuantity(quantity: Long, showQuantityAs: ShowQuantityAs = ShowQuantityAs.Numeric) : String
-{
-    if(showQuantityAs == ShowQuantityAs.Numeric)
-    {
-        var formattedQuantity = quantity.toString()
-        if(quantity == 1L || quantity == -1L) return "$formattedQuantity ${this.singularize(Plurality.CouldBeEither)}"
-        return "$formattedQuantity ${this.pluralize(Plurality.CouldBeEither)}"
+@JvmOverloads
+fun String.toQuantity(quantity: Long, showQuantityAs: ShowQuantityAs = ShowQuantityAs.Numeric): String =
+    when (showQuantityAs) {
+        ShowQuantityAs.Numeric -> {
+            val formattedQuantity = quantity.toString()
+            when (quantity) {
+                1L, -1L -> "$formattedQuantity ${this.singularize(Plurality.CouldBeEither)}"
+                else -> "$formattedQuantity ${this.pluralize(Plurality.CouldBeEither)}"
+            }
+        }
+        ShowQuantityAs.None -> {
+            when (quantity) {
+                1L, -1L -> this.singularize(Plurality.CouldBeEither)
+                else -> this.pluralize(Plurality.CouldBeEither)
+            }
+        }
+        ShowQuantityAs.Words -> {
+            when (quantity) {
+                1L, -1L -> "${quantity.toWords()} ${this.singularize(Plurality.CouldBeEither)}"
+                else -> "${quantity.toWords()} ${this.pluralize(Plurality.CouldBeEither)}"
+            }
+        }
     }
-    if(showQuantityAs == ShowQuantityAs.None)
-    {
-        if(quantity == 1L || quantity == -1L) return "${this.singularize(Plurality.CouldBeEither)}"
-        return this.pluralize(Plurality.CouldBeEither)
-    }
-    if(showQuantityAs == ShowQuantityAs.Words)
-    {
-        if(quantity == 1L || quantity == -1L) return "${quantity.toWords()} ${this.singularize(Plurality.CouldBeEither)}"
-        return "${quantity.toWords()} ${this.pluralize(Plurality.CouldBeEither)}"
-    }
-    return this
-}
 
-fun Int.toQuantity(unit: String, showQuantityAs: ShowQuantityAs = ShowQuantityAs.Numeric) : String
-{
-    return unit.toQuantity(this, showQuantityAs)
-}
+@JvmOverloads
+fun Int.toQuantity(unit: String, showQuantityAs: ShowQuantityAs = ShowQuantityAs.Numeric): String =
+    unit.toQuantity(this, showQuantityAs)
 
-fun Long.toQuantity(unit: String, showQuantityAs: ShowQuantityAs = ShowQuantityAs.Numeric) : String
-{
-    return unit.toQuantity(this, showQuantityAs)
-}
+@JvmOverloads
+fun Long.toQuantity(unit: String, showQuantityAs: ShowQuantityAs = ShowQuantityAs.Numeric): String =
+    unit.toQuantity(this, showQuantityAs)
 
-enum class ShowQuantityAs
-{
-        None
-        Numeric
-        Words
+enum class ShowQuantityAs {
+    None,
+    Numeric,
+    Words
 }
